@@ -1,7 +1,21 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { isCompositeComponent } from "react-dom/test-utils";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  query,
+  getDocs,
+  where,
+  collection,
+} from "firebase/firestore";
 
 // ssssFirebase configuration
 const firebaseConfig = {
@@ -28,11 +42,7 @@ export const db = getFirestore();
 
 export const createUserDocumentFromAuth = async (userAuth) => {
   const userDocRef = doc(db, "users", userAuth.uid);
-
-  console.log(userDocRef);
-
   const userSnapShot = await getDoc(userDocRef);
-  console.log(userSnapShot);
   if (!userSnapShot.exists()) {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
@@ -49,4 +59,22 @@ export const createUserDocumentFromAuth = async (userAuth) => {
   }
 
   return userDocRef;
+};
+
+export const createUserFromEmailPassword = async (
+  displayName,
+  email,
+  password
+) => {
+  // Return if no email or password provided
+  if (!email || !password) return;
+  console.log("hello");
+
+  // Create auth
+  const userAuth = await createUserWithEmailAndPassword(auth, email, password);
+  updateProfile(userAuth.user, {
+    displayName: displayName,
+  });
+
+  return userAuth;
 };
