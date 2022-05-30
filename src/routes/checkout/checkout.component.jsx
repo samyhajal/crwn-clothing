@@ -8,7 +8,6 @@ const Checkout = () => {
   useEffect(() => {
     setToggle(false);
   }, []);
-  console.log("cartItems", cartItems);
   return (
     <div className="checkout-container">
       <div className="checkout-header">
